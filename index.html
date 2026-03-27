@@ -37,7 +37,7 @@
 <script>
 const dropdown = document.getElementById("triggerSelect");
 
-// INIT CHART
+// ✅ GLOBAL CHART
 const ctx = document.getElementById('myChart').getContext('2d');
 
 window.myChart = new Chart(ctx, {
@@ -47,7 +47,8 @@ window.myChart = new Chart(ctx, {
         datasets: [{
             label: 'Total Cost',
             data: [],
-            fill: false
+            fill: false,
+            tension: 0.3
         }]
     }
 });
@@ -58,11 +59,11 @@ function loadData(trigger=800) {
         .then(res => res.json())
         .then(data => {
             updateTable(data.data);
-            updateChart(data.data);
+            updateChart(data.data, trigger);
         });
 }
 
-// TABLE
+// TABLE UPDATE
 function updateTable(data) {
     const tbody = document.querySelector("tbody");
     tbody.innerHTML = "";
@@ -82,13 +83,24 @@ function updateTable(data) {
     });
 }
 
-// CHART
-function updateChart(data) {
+// 🔥 FIXED CHART UPDATE
+function updateChart(data, selectedTrigger) {
     const labels = data.map(d => d.trigger);
     const values = data.map(d => d.total_cost);
 
+    const pointColors = data.map(d =>
+        d.trigger == selectedTrigger ? 'red' : 'blue'
+    );
+
+    const pointSizes = data.map(d =>
+        d.trigger == selectedTrigger ? 6 : 3
+    );
+
     window.myChart.data.labels = labels;
     window.myChart.data.datasets[0].data = values;
+    window.myChart.data.datasets[0].pointBackgroundColor = pointColors;
+    window.myChart.data.datasets[0].pointRadius = pointSizes;
+
     window.myChart.update();
 }
 
