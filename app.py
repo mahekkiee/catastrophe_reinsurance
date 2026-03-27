@@ -1,3 +1,11 @@
+# Read index.html at startup
+with open('index.html', 'r') as f:
+    INDEX_HTML = f.read()
+
+# Serve it directly
+@app.route('/')
+def index():
+    return INDEX_HTML
 """
 Flask app to serve the Catastrophic Loss Clustering dashboard
 Runs on Render.com for live deployment
